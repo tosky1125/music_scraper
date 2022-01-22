@@ -43,3 +43,50 @@
       vibe: Music[],
     }
     ```
+    
+    
+## Music Scraper
+
+1. Driving environment.
+- node : v14.16.0
+2. Language you use.
+- Typescript
+3. Library.
+- Axios for communication purposes, best for testing, and eslint for code organization.
+4. Check the results.
+- Execute testing of index.test.ts in the src folder.
+5. How the project works.
+- 'GetMusicRankService' inquires about the ranking of music sources. At the time of creation, a 'repository' suitable for the operator must be injected.
+- When the service is executed, 'repository' calls the music provider. Each business operator executes the method of 'repository' twice. First, the sound source ranking information ("Response Music Detail") is inquired, and the album information ("Response Album Detail" is called based on the ranking information arrangement.
+- Tag parsing in the 'dto' factory and delivering 'dto' after method execution.
+- After all calls are finished, return the 'ResponseMusicDto' arrangement.
+- The service generates a result value 'dto'(`Music') to be delivered outside the application layer based on 'dto'.
+
+## It's related to Parser's movements.
+
+1. Get the text and adjust it to the desired tag range.
+e.g.) From 'body' to '/body', from 'tbody' to /tbody'
+
+At this time, perform a pipe to remove unnecessary gaps in the parser.
+
+At the end of the pipe, separate the tag with a regular expression and convert it into a string arrangement.
+
+2. Make elements while touring the array and stack them in the stack.
+Each stack is stored in the cache class by class, ID, and tag name.
+3. When the end tag comes in, check the tag at the top of the stack to see if it is correct and remove it from the stack.
+At this time, if it is not matched, an HTML custom error occurs.
+4. After the tour, the stored cache and root node are returned.
+Root nodes are for testing purposes, and actual services only use cache.
+
+### "MergeMusicRankService" class.
+
+1. The class receives a list of music providers at the time of creation. Create a repository for each business operator with the received list and inject repo while creating a 'GetMusicRankService' for each business operator.
+2. Wait for parallel processing results and return 'GetMusicRankDto', the result of task performance.
+
+```tsx
+export interface GetMusicRankDto {
+melon: Music[],
+genie: Music[],
+vibe: Music[],
+}
+```
